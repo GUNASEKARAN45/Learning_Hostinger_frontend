@@ -21,14 +21,10 @@ jobs:
           cache-dependency-path: './package-lock.json'
 
       - name: Install Dependencies
-        run: |
-          cd frontend
-          npm ci
+        run: npm ci
 
       - name: Build Vite Application (QA mode)
-        run: |
-          cd frontend
-          npm run build:qa
+        run: npm run build:qa
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
