@@ -33,7 +33,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: .Dockerfile
+          file: Dockerfile
           push: false # Do not push to registry during test CI
           tags: math-auth-frontend:qa
           cache-from: type=gha
