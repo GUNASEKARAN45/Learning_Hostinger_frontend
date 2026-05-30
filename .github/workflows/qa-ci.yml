@@ -1,4 +1,4 @@
-name: Frontend QA CI
+name: Frontend QA CI/CD
 
 on:
   push:
@@ -6,10 +6,14 @@ on:
       - qa
 
 jobs:
-  build-and-test:
+  build-test-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # ==========================================
+      # PHASE 1: BUILD & TEST (The Safety Checks)
+      # ==========================================
+      
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -24,6 +28,7 @@ jobs:
         run: npm ci
 
       - name: Build Vite Application (QA mode)
+        # Tests the build to ensure no React/Vite errors exist before deploying
         run: npm run build:qa
 
       - name: Set up Docker Buildx
@@ -34,7 +39,25 @@ jobs:
         with:
           context: .
           file: Dockerfile
-          push: false # Do not push to registry during test CI
+          push: false # Do not push to registry; just verify it builds without crashing
           tags: math-auth-frontend:qa
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # ==========================================
+      # PHASE 2: AUTOMATED DEPLOYMENT
+      # ==========================================
+      
+      - name: Deploy to Hostinger Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Starting QA Frontend Deployment..."
+            cd /var/www/learning_server_guna_qa/frontend
+            git pull origin qa
+            cd /var/www/learning_server_guna_qa
+            docker compose up -d --build frontend-qa
+            echo "Deployment Successful!"
