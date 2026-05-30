@@ -3,7 +3,7 @@ import { Loader2 } from 'lucide-react';
 import Auth from './components/Auth';
 import MathGame from './components/MathGame';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL = "http://187.127.171.41/api" || 'http://localhost:5000';
 
 function App() {
   const [user, setUser] = useState(null);
