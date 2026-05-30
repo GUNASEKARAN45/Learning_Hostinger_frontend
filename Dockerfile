@@ -13,8 +13,8 @@ RUN npm ci
 # Copy project files
 COPY . .
 
-# Build the app using Vite (creates 'dist' directory)
-RUN npm run build
+# Build the app using Vite specifically in QA mode (creates 'dist' directory)
+RUN npx vite build --mode qa
 
 # Step 2: Serve the build directory using Nginx
 FROM nginx:alpine
